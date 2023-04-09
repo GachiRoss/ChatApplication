@@ -3,7 +3,7 @@ version: "3.9"
 services:
   user:
     build: 
-      context: ./User/.
+      context: ./user/.
       dockerfile: Dockerfile
     ports:
       - "30000:3000"
