@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: 
+    - "main"
+    - "dev_v1" 
+  pull_request:
+    branches: 
+    - "main"
+    - "dev_v1" 
+
+jobs:
+  build-services:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: 
+          - "User"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: dockerbuildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: dockerimage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ matrix.service }}
+          file: ./src/${{ matrix.service }}/Dockerfile
+          push: false
+          tags: local/${{ matrix.service }}:latest
+
+
+
+        
