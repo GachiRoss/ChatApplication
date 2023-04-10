@@ -2,21 +2,22 @@ name: CI
 
 on:
   push:
-    branches: 
-    - "main"
-    - "dev_v1" 
+    branches:
+      - "main"
+      - "dev_v1"
   pull_request:
-    branches: 
-    - "main"
-    - "dev_v1" 
+    branches:
+      - "main"
+      - "dev_v1"
 
 jobs:
   build-services:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: 
+        service:
           - "user"
+          - "message"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,7 +32,3 @@ jobs:
           file: ./${{ matrix.service }}/Dockerfile
           push: false
           tags: local/${{ matrix.service }}:latest
-
-
-
-        
