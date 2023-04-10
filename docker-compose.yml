@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   user:
-    build: 
+    build:
       context: ./user/.
       dockerfile: Dockerfile
     ports:
@@ -26,20 +26,37 @@ services:
     volumes:
       - user-db-data:/var/lib/postgresql/data
 
-  user-db-explorer:
+  message:
+    build:
+      context: ./message/.
+      dockerfile: Dockerfile
+    ports:
+      - "30001:3000"
+    depends_on:
+      - message-db
+    environment:
+      DB_HOST: message-db
+      DB_PORT: 5432
+      DB_NAME: messages
+      DB_USER: root
+      DB_PASSWORD: password
+
+  message-db:
+    image: postgres:15.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: messages
+    volumes:
+      - message-db-data:/var/lib/postgresql/data
+
+  db-explorer:
     image: adminer
     restart: unless-stopped
     ports:
       - "8001:8080"
-    environment:
-      ADMINER_DESIGN: |
-        <input type="hidden" name="auth[driver]" value="pgsql">
-        <input type="hidden" name="auth[server]" value="user-db">
-        <input type="hidden" name="auth[username]" value="root">
-        <input type="hidden" name="auth[password]" value="password">
-        <input type="hidden" name="auth[db]" value="user">
-    depends_on:
-      - user-db
 
 volumes:
   user-db-data:
+  message-db-data:
