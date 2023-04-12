@@ -6,7 +6,12 @@ const createUser = async (req, res) => {
   const user = req.body;
 
   // validation of correct JSON body
-  if (!user.username || !user.firstname || !user.lastname || !user.birthdate) {
+  if (
+    user.username == undefined ||
+    user.firstname == undefined ||
+    user.lastname == undefined ||
+    user.birthdate == undefined
+  ) {
     res.send("you are missing a parameter");
     return;
   }
