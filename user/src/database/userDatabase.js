@@ -31,7 +31,7 @@ async function migration() {
           "username" VARCHAR(16) NOT NULL UNIQUE,
           "firstname" VARCHAR(16) NOT NULL,
           "lastname" VARCHAR(16) NOT NULL,
-          "birthdate" BIGINT NOT NULL
+          "birthdate" INT NOT NULL
         );
     `);
 
