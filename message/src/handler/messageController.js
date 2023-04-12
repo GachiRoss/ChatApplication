@@ -8,7 +8,11 @@ const createMessage = async (req, res) => {
   // TODO: correct Message BODY
 
   // validation of correct JSON body
-  if (!message.message_from || !message.message_to || !message.message) {
+  if (
+    message.message_from == undefined ||
+    message.message_to == undefined ||
+    message.message == undefined
+  ) {
     res.send("you are missing a parameter");
     return;
   }
