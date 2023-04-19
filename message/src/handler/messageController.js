@@ -9,8 +9,8 @@ const createMessage = async (req, res) => {
 
   // validation of correct JSON body
   if (
-    message.message_from == undefined ||
-    message.message_to == undefined ||
+    message.senderid == undefined ||
+    message.recieverid == undefined ||
     message.message == undefined
   ) {
     res.send("you are missing a parameter");
@@ -19,8 +19,8 @@ const createMessage = async (req, res) => {
 
   // save message to the database
   await db.executeQuery(
-    `INSERT INTO "messages" ("message_from", "message_to", "message") VALUES ($1, $2, $3)`,
-    [message.message_from, message.message_to, message.message]
+    `INSERT INTO "messages" ("senderid", "recieverid", "message") VALUES ($1, $2, $3)`,
+    [message.senderid, message.recieverid, message.message]
   );
 
   // return the saved message
@@ -50,9 +50,9 @@ const getConversation = async (req, res) => {
   const messages = await db.executeQuery(
     `SELECT * FROM "messages" 
     WHERE
-    "message_from" = $1 AND "message_to" = $2
+    "senderid" = $1 AND "recieverid" = $2
     OR
-    "message_from" = $2 AND "message_to" = $1`,
+    "senderid" = $2 AND "recieverid" = $1`,
     ids
   );
 
