@@ -18,6 +18,8 @@ jobs:
         service:
           - "user"
           - "message"
+          - "friend"
+          - "frontend"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
