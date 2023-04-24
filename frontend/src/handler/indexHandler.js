@@ -1,6 +1,5 @@
 const express = require("express");
-const controller = require("./userController");
-const bodyParser = require("body-parser");
+const path = require("path");
 
 function initServer(port) {
   // use express to make server
@@ -8,20 +7,11 @@ function initServer(port) {
 
   // allow Express to parse JSON data in the request body
   app.use(express.json());
-  app.use(
-    bodyParser.urlencoded({
-      extended: true,
-    })
-  );
-
-  // create user endpoint
-  app.post("/user", controller.createUser);
 
   // get user by id endpoint
-  app.get("/user/:id", controller.getUser);
-
-  // get all users endpoint
-  app.get("/users", controller.getAllUsers);
+  app.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname, "../asset/index.html"));
+  });
 
   // start server
   app.listen(port, () => {

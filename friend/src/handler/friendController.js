@@ -13,7 +13,7 @@ const sendFriend = async (req, res) => {
 
   // save the friend to the database
   await db.executeQuery(
-    `INSERT INTO "friends" ("senderid", "recieverid", "status") VALUES ($1, $2, $3)`,
+    `INSERT INTO "friends" ("senderid", "recieverid", "status") VALUES ($1, $2, $3) ON CONFLICT ("senderid", "recieverid") DO UPDATE SET "status" = $3;`,
     [friend.senderid, friend.recieverid, 0]
   );
 
@@ -36,7 +36,7 @@ const answerFriend = async (req, res) => {
     return;
   }
   // Key to determine the change the status of the request
-  const status = body.accepted ? 1 : 2;
+  const status = body.accepted === true || body.accepted === "true" ? 1 : 2;
 
   // querry to find by id and set request to accept/decline
   const friend = await db.executeQuery(
@@ -57,8 +57,8 @@ const getFriends = async (req, res) => {
 
   // get friends from the database
   const friends = await db.executeQuery(
-    `SELECT * FROM "friends" WHERE ("senderid" = $1 OR "recieverid" = $1) AND "status" = $2`,
-    [id, 1]
+    `SELECT * FROM "friends" WHERE ("senderid" = $1 OR "recieverid" = $1) AND ("status" = $2 OR "status" = $3)`,
+    [id, 1, 0]
   );
 
   res.send(friends);

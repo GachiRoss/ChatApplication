@@ -41,7 +41,17 @@ const getUser = async (req, res) => {
   res.send(users[0]);
 };
 
+// create endpoint to fetch all users
+
+const getAllUsers = async (req, res) => {
+  // get user from the database
+  const users = await db.executeQuery(`SELECT * FROM "users"`);
+
+  res.send(users);
+};
+
 module.exports = {
   createUser: createUser,
   getUser: getUser,
+  getAllUsers: getAllUsers,
 };
