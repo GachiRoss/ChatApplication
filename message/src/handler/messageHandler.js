@@ -1,5 +1,6 @@
 const express = require("express");
 const controller = require("./messageController");
+const bodyParser = require("body-parser");
 
 function initServer(port) {
   // use express to make server
@@ -7,6 +8,11 @@ function initServer(port) {
 
   // allow Express to parse JSON data in the request body
   app.use(express.json());
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
+    })
+  );
 
   // create message endpoint
   app.post("/message", controller.createMessage);
@@ -15,7 +21,7 @@ function initServer(port) {
   app.get("/message/:id", controller.getMessage);
 
   // get all messages
-  app.get("/conversation", controller.getConversation);
+  app.get("/conversation/:senderid/:recieverid", controller.getConversation);
 
   // start server
   app.listen(port, () => {

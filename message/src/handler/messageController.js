@@ -44,7 +44,14 @@ const getMessage = async (req, res) => {
 
 const getConversation = async (req, res) => {
   // get the ids from data in the request body
-  const ids = req.body.ids;
+  const senderid = req.params.senderid;
+  const recieverid = req.params.recieverid;
+
+  // validation of correct JSON body
+  if (senderid == undefined || recieverid == undefined) {
+    res.send("you are missing a parameter");
+    return;
+  }
 
   // query to get all messages between two ids
   const messages = await db.executeQuery(
@@ -52,8 +59,9 @@ const getConversation = async (req, res) => {
     WHERE
     "senderid" = $1 AND "recieverid" = $2
     OR
-    "senderid" = $2 AND "recieverid" = $1`,
-    ids
+    "senderid" = $2 AND "recieverid" = $1
+    ORDER BY "id"`,
+    [senderid, recieverid]
   );
 
   // return messages
