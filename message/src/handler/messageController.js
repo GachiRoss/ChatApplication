@@ -1,4 +1,5 @@
 const db = require("../database/messageDatabase");
+const axios = require("axios");
 
 // create Message endpoint controller function
 const createMessage = async (req, res) => {
@@ -22,6 +23,13 @@ const createMessage = async (req, res) => {
     `INSERT INTO "messages" ("senderid", "recieverid", "message") VALUES ($1, $2, $3)`,
     [message.senderid, message.recieverid, message.message]
   );
+
+  var url = "http://gateway/websocket/message";
+  axios({
+    method: "post",
+    url: url,
+    data: message,
+  });
 
   // return the saved message
   res.send(message);

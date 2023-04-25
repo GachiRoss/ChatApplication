@@ -155,6 +155,10 @@
           "Birthdate: " + user.birthdate;
 
         getFriends();
+        connectWebsocket();
+        currentContactid = 0;
+        document.getElementById("chatMessages").innerHTML = "";
+        document.getElementById("chatContact").innerHTML = "";
       }
 
       async function getFriends() {
@@ -252,6 +256,7 @@
 
       function openChat(friendid) {
         currentContactid = friendid;
+        document.getElementById("chatContact").innerHTML = currentContactid;
         getMessages();
       }
 
@@ -271,13 +276,10 @@
             listelement.classList.add("bg-primary");
             listelement.classList.add("text-white");
           }
-          var id = document.createElement("p");
           var text = document.createElement("p");
 
-          id.innerHTML = "id: " + message.senderid;
           text.innerHTML = "text: " + message.message;
 
-          listelement.appendChild(id);
           listelement.appendChild(text);
 
           chatList.appendChild(listelement);
@@ -298,6 +300,24 @@
       }
 
       function getArchieveMessages() {}
+
+      var websocketClient = null;
+
+      function connectWebsocket() {
+        if (websocketClient) {
+          websocketClient.close();
+        }
+        websocketClient = new WebSocket("ws://localhost/websocket");
+
+        websocketClient.onopen = (event) => {
+          websocketClient.send(currentUserid + "");
+        };
+
+        websocketClient.onmessage = (event) => {
+          console.log(event.data);
+          getMessages();
+        };
+      }
 
       function sendRequest(url, type, data, datatype) {
         var res = $.ajax({
