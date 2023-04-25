@@ -20,6 +20,7 @@ jobs:
           - "message"
           - "friend"
           - "frontend"
+          - "websocket"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
