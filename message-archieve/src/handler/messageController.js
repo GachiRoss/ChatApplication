@@ -1,6 +1,5 @@
 const db = require("../database/messageDatabase");
 const axios = require("axios");
-const queue = require("../queue/messageQueue");
 
 // create Message endpoint controller function
 const createMessage = async (req, res) => {
@@ -21,7 +20,7 @@ const createMessage = async (req, res) => {
 
   // save message to the database
   await db.executeQuery(
-    `INSERT INTO "messages" ("senderid", "recieverid", "message") VALUES ($1, $2, $3)`,
+    `INSERT INTO "archieveMessages" ("senderid", "recieverid", "message") VALUES ($1, $2, $3)`,
     [message.senderid, message.recieverid, message.message]
   );
 
@@ -31,20 +30,6 @@ const createMessage = async (req, res) => {
     url: url,
     data: message,
   });
-
-  const messageCount = await db.executeQuery(
-    `SELECT COUNT(*) FROM "messages" WHERE "senderid" = $1 AND "recieverid" = $2 OR "senderid" = $2 AND "recieverid" = $1`,
-    [message.senderid, message.recieverid]
-  );
-
-  if (Number(messageCount[0].count) > 20) {
-    const oldMessage = await db.executeQuery(
-      `SELECT * FROM "messages" WHERE "senderid" = $1 AND "recieverid" = $2 OR "senderid" = $2 AND "recieverid" = $1 LIMIT 1 OFFSET $3`,
-      [message.senderid, message.recieverid, Number(messageCount[0].count) - 21]
-    );
-
-    queue.sendQueue(oldMessage[0]);
-  }
 
   // return the saved message
   res.send(message);
@@ -57,7 +42,7 @@ const getMessage = async (req, res) => {
 
   // get message from the database
   const message = await db.executeQuery(
-    `SELECT * FROM "messages" WHERE "id" = $1`,
+    `SELECT * FROM "archieveMessages" WHERE "id" = $1`,
     [id]
   );
 
@@ -78,7 +63,7 @@ const getConversation = async (req, res) => {
 
   // query to get all messages between two ids
   const messages = await db.executeQuery(
-    `SELECT * FROM "messages" 
+    `SELECT * FROM "archieveMessages" 
     WHERE
     "senderid" = $1 AND "recieverid" = $2
     OR
@@ -102,13 +87,13 @@ const removeMessage = async (req, res) => {
   }
 
   await db.executeQuery(
-    `DELETE FROM "messages"
+    `DELETE FROM "archieveMessages"
     WHERE
     "id" = $1`,
     [messageid]
   );
 
-  res.send("message: " + messageid + " has been deleted");
+  res.send("message: " + messageid + "has been deleted");
 };
 
 module.exports = {
