@@ -76,8 +76,29 @@ const getConversation = async (req, res) => {
   res.send(messages);
 };
 
+const removeMessage = async (req, res) => {
+  // get message id from data in request body
+  const messageid = req.params.id;
+
+  // validation of correct JSON body
+  if (messageid == undefined) {
+    res.send("you are missing a parameter");
+    return;
+  }
+
+  await db.executeQuery(
+    `DELETE FROM "messages"
+    WHERE
+    "id" = $1`,
+    [messageid]
+  );
+
+  res.send("message: " + messageid + "has been deleted");
+};
+
 module.exports = {
   createMessage: createMessage,
   getMessage: getMessage,
   getConversation: getConversation,
+  removeMessage: removeMessage,
 };

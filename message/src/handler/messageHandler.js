@@ -23,6 +23,9 @@ function initServer(port) {
   // get all messages
   app.get("/conversation/:senderid/:recieverid", controller.getConversation);
 
+  // delete old message by id endpoint
+  app.delete("/message/remove/:id", controller.removeMessage);
+
   // start server
   app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
