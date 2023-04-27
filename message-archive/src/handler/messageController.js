@@ -2,57 +2,21 @@ const db = require("../database/messageDatabase");
 const axios = require("axios");
 
 // create Message endpoint controller function
-const createMessage = async (req, res) => {
-  // get the message data from the request body
-  const message = req.body;
-
-  // TODO: correct Message BODY
-
-  // validation of correct JSON body
-  if (
-    message.senderid == undefined ||
-    message.recieverid == undefined ||
-    message.message == undefined
-  ) {
-    res.send("you are missing a parameter");
-    return;
-  }
-
-  // save message to the database
+const createMessage = async (message) => {
+  // create message to db
   await db.executeQuery(
-    `INSERT INTO "archieveMessages" ("senderid", "recieverid", "message") VALUES ($1, $2, $3)`,
+    `INSERT INTO "archiveMessages" ("senderid", "recieverid", "message" ) VALUES ($1, $2, $3)`,
     [message.senderid, message.recieverid, message.message]
   );
 
-  var url = "http://gateway/websocket/message";
-  axios({
-    method: "post",
+  // requeste message service delete oldmessage
+  const url = "http://gateway/message/remove/" + message.id;
+  await axios({
     url: url,
-    data: message,
+    method: "DELETE",
   });
 
-  const deleteold = await db.executeQuery(
-    "http://gateway/message/remove" + message.id
-  );
-
-  console.log(deleteold);
-  // return the saved message
-  res.send(message);
-};
-
-// create endpoint to get a message by id
-const getMessage = async (req, res) => {
-  // get id from url
-  const id = req.params.id;
-
-  // get message from the database
-  const message = await db.executeQuery(
-    `SELECT * FROM "archieveMessages" WHERE "id" = $1`,
-    [id]
-  );
-
-  // return first message from querydata
-  res.send(message[0]);
+  return;
 };
 
 const getConversation = async (req, res) => {
@@ -81,29 +45,7 @@ const getConversation = async (req, res) => {
   res.send(messages);
 };
 
-const removeMessage = async (req, res) => {
-  // get message id from data in request body
-  const messageid = req.params.id;
-
-  // validation of correct JSON body
-  if (messageid == undefined) {
-    res.send("you are missing a parameter");
-    return;
-  }
-
-  await db.executeQuery(
-    `DELETE FROM "archiveMessages"
-    WHERE
-    "id" = $1`,
-    [messageid]
-  );
-
-  res.send("message: " + messageid + "has been deleted");
-};
-
 module.exports = {
   createMessage: createMessage,
-  getMessage: getMessage,
   getConversation: getConversation,
-  removeMessage: removeMessage,
 };

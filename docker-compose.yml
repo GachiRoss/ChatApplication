@@ -30,7 +30,6 @@ services:
     build:
       context: ./message/.
       dockerfile: Dockerfile
-    restart: unless-stopped
     ports:
       - "30001:3000"
     depends_on:
@@ -91,12 +90,12 @@ services:
       - friend
       - frontend
       - websocket
+      - message-archive
 
   frontend:
     build:
       context: ./frontend/.
       dockerfile: Dockerfile
-    restart: unless-stopped
     ports:
       - "30003:3000"
 
@@ -104,7 +103,6 @@ services:
     build:
       context: ./websocket/.
       dockerfile: Dockerfile
-    restart: unless-stopped
     ports:
       - "30004:3000"
 
@@ -121,7 +119,6 @@ services:
     build:
       context: ./message-archive/.
       dockerfile: Dockerfile
-    restart: unless-stopped
     ports:
       - "30005:3000"
     environment:

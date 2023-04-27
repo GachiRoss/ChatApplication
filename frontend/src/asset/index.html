@@ -86,6 +86,9 @@
 
       <div class="col-4">
         <h1>contact: <span id="chatContact"></span></h1>
+        <button class="btn btn-primary" onclick="getArchieveMessages()">
+          Get Old Messages
+        </button>
         <div>
           <ul class="list-group" id="chatMessages"></ul>
         </div>
@@ -260,9 +263,13 @@
         getMessages();
       }
 
-      async function getMessages() {
+      async function getMessages(oldMessages) {
         var url = "/conversation/" + currentUserid + "/" + currentContactid;
         var messages = await sendRequest(url, "GET");
+
+        if (oldMessages) {
+          messages = oldMessages.concat(messages);
+        }
 
         var chatList = document.getElementById("chatMessages");
 
@@ -299,7 +306,13 @@
         getMessages();
       }
 
-      function getArchieveMessages() {}
+      async function getArchieveMessages() {
+        var url =
+          "/conversation-archive/" + currentUserid + "/" + currentContactid;
+        var messages = await sendRequest(url, "GET");
+
+        getMessages(messages);
+      }
 
       var websocketClient = null;
 
@@ -318,6 +331,12 @@
           getMessages();
         };
       }
+
+      setInterval(() => {
+        if (currentUserid != 0) {
+          connectWebsocket();
+        }
+      }, 15000);
 
       function sendRequest(url, type, data, datatype) {
         var res = $.ajax({
