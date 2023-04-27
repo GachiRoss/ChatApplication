@@ -34,6 +34,7 @@ services:
       - "30001:3000"
     depends_on:
       - message-db
+      - message-archive-queue
     environment:
       DB_HOST: message-db
       DB_PORT: 5432
@@ -89,6 +90,7 @@ services:
       - friend
       - frontend
       - websocket
+      - message-archive
 
   frontend:
     build:
@@ -104,6 +106,38 @@ services:
     ports:
       - "30004:3000"
 
+  message-archive-queue:
+    image: rabbitmq:3.12-rc-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - message-queue-data:/var/lib/rabbitmq
+
+  message-archive:
+    build:
+      context: ./message-archive/.
+      dockerfile: Dockerfile
+    ports:
+      - "30005:3000"
+    environment:
+      DB_HOST: message-archive-db
+      DB_PORT: 5432
+      DB_NAME: archivemessages
+      DB_USER: root
+      DB_PASSWORD: password
+
+  message-archive-db:
+    image: postgres:15.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: archivemessages
+    volumes:
+      - message-archive-db-data:/var/lib/postgresql/data
+
   db-explorer:
     image: adminer
     restart: unless-stopped
@@ -114,3 +148,5 @@ volumes:
   user-db-data:
   message-db-data:
   friend-db-data:
+  message-queue-data:
+  message-archive-db-data:

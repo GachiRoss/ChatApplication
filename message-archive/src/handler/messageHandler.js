@@ -14,17 +14,11 @@ function initServer(port) {
     })
   );
 
-  // create message endpoint
-  app.post("/message", controller.createMessage);
-
-  // get message by id endpoint
-  app.get("/message/:id", controller.getMessage);
-
   // get all messages
-  app.get("/conversation/:senderid/:recieverid", controller.getConversation);
-
-  // delete old message by id endpoint
-  app.delete("/message/remove/:id", controller.removeMessage);
+  app.get(
+    "/conversation-archive/:senderid/:recieverid",
+    controller.getConversation
+  );
 
   // start server
   app.listen(port, () => {
