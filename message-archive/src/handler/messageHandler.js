@@ -1,7 +1,6 @@
 const express = require("express");
 const controller = require("./messageController");
 const bodyParser = require("body-parser");
-const amqp = require("amqplib/callback_api");
 
 function initServer(port) {
   // use express to make server

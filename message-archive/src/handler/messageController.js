@@ -31,6 +31,11 @@ const createMessage = async (req, res) => {
     data: message,
   });
 
+  const deleteold = await db.executeQuery(
+    "http://gateway/message/remove" + message.id
+  );
+
+  console.log(deleteold);
   // return the saved message
   res.send(message);
 };
@@ -63,7 +68,7 @@ const getConversation = async (req, res) => {
 
   // query to get all messages between two ids
   const messages = await db.executeQuery(
-    `SELECT * FROM "archieveMessages" 
+    `SELECT * FROM "archiveMessages" 
     WHERE
     "senderid" = $1 AND "recieverid" = $2
     OR
@@ -87,7 +92,7 @@ const removeMessage = async (req, res) => {
   }
 
   await db.executeQuery(
-    `DELETE FROM "archieveMessages"
+    `DELETE FROM "archiveMessages"
     WHERE
     "id" = $1`,
     [messageid]

@@ -26,7 +26,7 @@ async function executeQuery(query, values) {
 async function migration() {
   // create messages table if not exist already
   await executeQuery(`
-    CREATE TABLE IF NOT EXISTS "archieveMessages" (
+    CREATE TABLE IF NOT EXISTS "archiveMessages" (
       "id" SERIAL PRIMARY KEY,
       "senderid" INT NOT NULL,
       "recieverid" INT NOT NULL,

@@ -1,4 +1,5 @@
 const amqplib = require("amqplib/callback_api");
+const controller = require("../handler/messageController");
 const queue = "oldMessages";
 
 const oldMessages = () => {
@@ -15,6 +16,7 @@ const oldMessages = () => {
         if (msg !== null) {
           console.log(msg.content.toString());
           ch2.ack(msg);
+          controller.createMessage(msg.content.toString());
         } else {
           console.log("Consumer cancelled by server");
         }

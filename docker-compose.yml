@@ -119,11 +119,17 @@ services:
 
   message-archive:
     build:
-      context: ./message-archieve/.
+      context: ./message-archive/.
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "30005:3000"
+    environment:
+      DB_HOST: message-archive-db
+      DB_PORT: 5432
+      DB_NAME: archivemessages
+      DB_USER: root
+      DB_PASSWORD: password
 
   message-archive-db:
     image: postgres:15.2
