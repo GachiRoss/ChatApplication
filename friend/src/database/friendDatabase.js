@@ -27,7 +27,7 @@ async function migration() {
   // create friend and assoiciate status table if not exist already
   await executeQuery(`
     CREATE TABLE IF NOT EXISTS "status" (
-      "id" INT PRIMARY KEY,
+      "id" BIGINT PRIMARY KEY,
       "name" varchar(10) NOT NULL
     );
 
@@ -39,8 +39,8 @@ async function migration() {
     ON CONFLICT DO NOTHING;
 
     CREATE TABLE IF NOT EXISTS "friends" (
-        "senderid" INT NOT NULL,
-        "recieverid" INT NOT NULL,
+        "senderid" BIGINT NOT NULL,
+        "recieverid" BIGINT NOT NULL,
         "status" INT REFERENCES status(id),
         UNIQUE (senderid, recieverid)
       );
