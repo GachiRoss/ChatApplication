@@ -27,9 +27,9 @@ async function migration() {
   // create messages table if not exist already
   await executeQuery(`
     CREATE TABLE IF NOT EXISTS "messages" (
-      "id" SERIAL PRIMARY KEY,
-      "senderid" INT NOT NULL,
-      "recieverid" INT NOT NULL,
+      "id" BIGSERIAL PRIMARY KEY,
+      "senderid" BIGINT NOT NULL,
+      "recieverid" BIGINT NOT NULL,
       "message" TEXT NOT NULL
     );
   `);

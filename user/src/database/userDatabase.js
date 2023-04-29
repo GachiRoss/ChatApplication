@@ -27,11 +27,11 @@ async function migration() {
   // create user table if not exist already
   await executeQuery(`
       CREATE TABLE IF NOT EXISTS "users" (
-          "id" SERIAL PRIMARY KEY,
+          "id" BIGSERIAL PRIMARY KEY,
           "username" VARCHAR(16) NOT NULL UNIQUE,
           "firstname" VARCHAR(16) NOT NULL,
           "lastname" VARCHAR(16) NOT NULL,
-          "birthdate" INT NOT NULL
+          "birthdate" BIGINT NOT NULL
         );
     `);
 
